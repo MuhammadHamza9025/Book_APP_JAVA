@@ -19,7 +19,23 @@
             <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Add more dependencies as needed -->
+        <!-- Gson for JSON serialization -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+        <!-- JAXB API and implementation for Java 9+ (Java 11/17/21) -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>4.0.5</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>BookLibrary</finalName>
