@@ -1,1 +1,0 @@
-web: curl -fsSL https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.102/bin/apache-tomcat-9.0.102.tar.gz | tar -xz -C /tmp && cp target/*.war /tmp/apache-tomcat-9.0.102/webapps/app.war && /tmp/apache-tomcat-9.0.102/bin/catalina.sh run
