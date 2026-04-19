@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Book API Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+
+        .section {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .section h3 {
+            margin-top: 0;
+        }
+
+        input,
+        select,
+        button {
+            margin: 5px 0;
+            padding: 6px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            font-family: monospace;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 10px;
+            max-width: 400px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Book REST API Tester</h1>
+
+    <div style="margin-bottom: 20px;">
+        <label for="formatSelect">Select Response/Request Format:</label>
+        <select id="formatSelect">
+            <option value="json">JSON</option>
+            <option value="xml">XML</option>
+            <option value="text">TEXT</option>
+        </select>
+    </div>
+
+    <div style="display: flex; gap: 20px;">
+        <div style="flex: 1;">
+
+            <!-- GET ALL -->
+            <div class="section">
+                <h3>1. Get All Books</h3>
+                <button onclick="getAllBooks()">Get All Books</button>
+            </div>
+
+            <!-- GET ONE -->
+            <div class="section">
+                <h3>2. Get Book by ID</h3>
+                <input type="number" id="getId" placeholder="Book ID">
+                <button onclick="getBookById()">Get Book</button>
+            </div>
+
+            <!-- POST -->
+            <div class="section">
+                <h3>3. Add Book (POST)</h3>
+                <div class="grid">
+                    <label>Title:</label> <input type="text" id="postTitle">
+                    <label>Author:</label> <input type="text" id="postAuthor">
+                    <label>Date:</label> <input type="text" id="postDate" placeholder="YYYY-MM-DD">
+                    <label>Genres:</label> <input type="text" id="postGenres">
+                    <label>Characters:</label> <input type="text" id="postCharacters">
+                    <label>Synopsis:</label> <input type="text" id="postSynopsis">
+                </div>
+                <button onclick="addBook()">Add Book</button>
+            </div>
+
+            <!-- PUT -->
+            <div class="section">
+                <h3>4. Update Book (PUT)</h3>
+                <div class="grid">
+                    <label>Book ID:</label> <input type="number" id="putId">
+                    <label>Title:</label> <input type="text" id="putTitle">
+                    <label>Author:</label> <input type="text" id="putAuthor">
+                    <label>Date:</label> <input type="text" id="putDate">
+                    <label>Genres:</label> <input type="text" id="putGenres">
+                    <label>Characters:</label> <input type="text" id="putCharacters">
+                    <label>Synopsis:</label> <input type="text" id="putSynopsis">
+                </div>
+                <button onclick="updateBook()">Update Book</button>
+            </div>
+
+            <!-- DELETE -->
+            <div class="section">
+                <h3>5. Delete Book (DELETE)</h3>
+                <input type="number" id="deleteId" placeholder="Book ID">
+                <button onclick="deleteBook()">Delete Book</button>
+            </div>
+
+        </div>
+
+        <div style="flex: 1;">
+            <h3>API Response Output:</h3>
+            <textarea id="output" readonly placeholder="Raw API response will appear here..."></textarea>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/Book/BookAPI';
+
+        function getFormat() {
+            return document.getElementById('formatSelect').value;
+        }
+
+        function displayOutput(text) {
+            document.getElementById('output').value = text;
+        }
+
+        // Helper to construct request body based on selected format
+        function buildPayload(divPrefix, includeId) {
+            const format = getFormat();
+            const id = includeId ? document.getElementById(divPrefix + 'Id').value : 0;
+            const title = document.getElementById(divPrefix + 'Title').value;
+            const author = document.getElementById(divPrefix + 'Author').value;
+            const date = document.getElementById(divPrefix + 'Date').value;
+            const genres = document.getElementById(divPrefix + 'Genres').value;
+            const characters = document.getElementById(divPrefix + 'Characters').value;
+            const synopsis = document.getElementById(divPrefix + 'Synopsis').value;
+
+            if (format === 'xml') {
+                return `<?xml version="1.0" encoding="UTF-8"?><book><author>${author}</author><characters>${characters}</characters><date>${date}</date><genres>${genres}</genres>${includeId ? `<id>${id}</id>` : '<id>0</id>'}<synopsis>${synopsis}</synopsis><title>${title}</title></book>`;
+            } else {
+                // Default to JSON for JSON and TEXT formats
+                return JSON.stringify({
+                    id: includeId ? parseInt(id) : 0,
+                    title: title,
+                    author: author,
+                    date: date,
+                    genres: genres,
+                    characters: characters,
+                    synopsis: synopsis
+                });
+            }
+        }
+
+        function getContentType() {
+            return getFormat() === 'xml' ? 'application/xml' : 'application/json';
+        }
+
+        async function getAllBooks() {
+            const format = getFormat();
+            displayOutput("Fetching all books...");
+            try {
+                const response = await fetch(`${API_URL}?format=${format}`);
+                const text = await response.text();
+                displayOutput(`Status: ${response.status}\n\n${text}`);
+            } catch (err) {
+                displayOutput(`Error: ${err}`);
+            }
+        }
+
+        async function getBookById() {
+            const id = document.getElementById('getId').value;
+            const format = getFormat();
+            displayOutput(`Fetching book ${id}...`);
+            try {
+                const response = await fetch(`${API_URL}?id=${id}&format=${format}`);
+                const text = await response.text();
+                displayOutput(`Status: ${response.status}\n\n${text}`);
+            } catch (err) {
+                displayOutput(`Error: ${err}`);
+            }
+        }
+
+        async function addBook() {
+            const format = getFormat();
+            const payload = buildPayload('post', false);
+            displayOutput(`Sending POST request...\nPayload:\n${payload}`);
+
+            try {
+                const response = await fetch(`${API_URL}?format=${format}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': getContentType() },
+                    body: payload
+                });
+                const text = await response.text();
+                displayOutput(`Status: ${response.status}\n\n${text}`);
+            } catch (err) {
+                displayOutput(`Error: ${err}`);
+            }
+        }
+
+        async function updateBook() {
+            const format = getFormat();
+            const payload = buildPayload('put', true);
+            displayOutput(`Sending PUT request...\nPayload:\n${payload}`);
+
+            try {
+                const response = await fetch(`${API_URL}?format=${format}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': getContentType() },
+                    body: payload
+                });
+                const text = await response.text();
+                displayOutput(`Status: ${response.status}\n\n${text}`);
+            } catch (err) {
+                displayOutput(`Error: ${err}`);
+            }
+        }
+
+        async function deleteBook() {
+            const id = document.getElementById('deleteId').value;
+            const format = getFormat();
+            displayOutput(`Sending DELETE request for book ${id}...`);
+
+            try {
+                const response = await fetch(`${API_URL}?id=${id}&format=${format}`, {
+                    method: 'DELETE'
+                });
+                const text = await response.text();
+                displayOutput(`Status: ${response.status}\n\n${text}`);
+            } catch (err) {
+                displayOutput(`Error: ${err}`);
+            }
+        }
+    </script>
+</body>
+
+</html>
