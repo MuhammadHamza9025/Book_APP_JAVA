@@ -12,9 +12,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 
 import com.google.gson.Gson;
 
@@ -28,9 +28,11 @@ public class BookAPI extends HttpServlet {
     private Gson gson = new Gson();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String format = request.getParameter("format");
-        if (format == null) format = "json"; // Default to JSON
+        if (format == null)
+            format = "json"; // Default to JSON
 
         String idStr = request.getParameter("id");
         String searchStr = request.getParameter("search");
@@ -58,9 +60,11 @@ public class BookAPI extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String format = request.getParameter("format");
-        if (format == null) format = "json";
+        if (format == null)
+            format = "json";
 
         String requestBody = getRequestBody(request);
         Book book = parseBookFromBody(requestBody, format);
@@ -77,9 +81,11 @@ public class BookAPI extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String format = request.getParameter("format");
-        if (format == null) format = "json";
+        if (format == null)
+            format = "json";
 
         String requestBody = getRequestBody(request);
         Book book = parseBookFromBody(requestBody, format);
@@ -96,7 +102,8 @@ public class BookAPI extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String idStr = request.getParameter("id");
 
         if (idStr != null && !idStr.trim().isEmpty()) {
@@ -122,7 +129,7 @@ public class BookAPI extends HttpServlet {
                 JAXBContext context = JAXBContext.newInstance(Book.class, BookList.class);
                 Marshaller marshaller = context.createMarshaller();
                 marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-                
+
                 StringWriter sw = new StringWriter();
                 marshaller.marshal(data, sw);
                 out.print(sw.toString());
@@ -139,7 +146,8 @@ public class BookAPI extends HttpServlet {
 
             } else { // json default
                 response.setContentType("application/json");
-                // For BookList, unwrap it into the actual List to keep JSON arrays clean instead of an object wrapping an array.
+                // For BookList, unwrap it into the actual List to keep JSON arrays clean
+                // instead of an object wrapping an array.
                 if (data instanceof BookList) {
                     out.print(gson.toJson(((BookList) data).getBooks()));
                 } else {
@@ -151,7 +159,7 @@ public class BookAPI extends HttpServlet {
             response.setContentType("text/plain");
             out.print("Server Error: " + e.getMessage());
         }
-        
+
         out.flush();
     }
 
