@@ -5,7 +5,7 @@ FROM tomcat:10-jdk21-temurin
 RUN rm -rf /usr/local/tomcat/webapps/*
 
 # Copy WAR file to Tomcat
-COPY target/Book.war /usr/local/tomcat/webapps/ROOT.war
+COPY target/BookLibrary.war /usr/local/tomcat/webapps/ROOT.war
 
 EXPOSE 8080
 
