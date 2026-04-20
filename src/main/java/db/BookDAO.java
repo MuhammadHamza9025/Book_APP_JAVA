@@ -9,42 +9,55 @@ public class BookDAO {
     Book oneBook = null;
     Connection conn = null;
     Statement stmt = null;
-    String user = "amjidamz";       // ← change this
-    String password = "Vudeksoor7";   // ← change this
-    String url = "jdbc:mysql://mudfoot.doc.stu.mmu.ac.uk:6306/" + user;
+    // String user = "amjidamz"; // ← change this
+    // String password = "Vudeksoor7"; // ← change this
+    // String url = "jdbc:mysql://mudfoot.doc.stu.mmu.ac.uk:6306/" + user;
+    // CHANGE THESE 3 LINES
+    String user = "root";
+    String password = "JXYtjXxrpbSEviMVnNeuHaVOiRRTMMUa";
+    String url = "jdbc:mysql://roundhouse.proxy.rlwy.net:20245/railway";
 
-    public BookDAO() {}
+    public BookDAO() {
+    }
 
     private void openConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (Exception e) { System.out.println(e); }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
 
         try {
             conn = DriverManager.getConnection(url, user, password);
             stmt = conn.createStatement();
-        } catch (SQLException se) { System.out.println(se); }
+        } catch (SQLException se) {
+            System.out.println(se);
+        }
     }
 
     private void closeConnection() {
         try {
-            if (conn != null) conn.close();
-        } catch (SQLException e) { e.printStackTrace(); }
+            if (conn != null)
+                conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private Book getNextBook(ResultSet rs) {
         Book thisBook = null;
         try {
             thisBook = new Book(
-                rs.getInt("id"),
-                rs.getString("title"),
-                rs.getString("author"),
-                rs.getString("date"),
-                rs.getString("genres"),
-                rs.getString("characters"),
-                rs.getString("synopsis")
-            );
-        } catch (SQLException e) { e.printStackTrace(); }
+                    rs.getInt("id"),
+                    rs.getString("title"),
+                    rs.getString("author"),
+                    rs.getString("date"),
+                    rs.getString("genres"),
+                    rs.getString("characters"),
+                    rs.getString("synopsis"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return thisBook;
     }
 
@@ -59,7 +72,9 @@ public class BookDAO {
             }
             stmt.close();
             closeConnection();
-        } catch (SQLException se) { System.out.println(se); }
+        } catch (SQLException se) {
+            System.out.println(se);
+        }
         return allBooks;
     }
 
@@ -80,7 +95,9 @@ public class BookDAO {
             }
             ps.close();
             closeConnection();
-        } catch (SQLException se) { System.out.println(se); }
+        } catch (SQLException se) {
+            System.out.println(se);
+        }
         return results;
     }
 
@@ -98,7 +115,9 @@ public class BookDAO {
             }
             ps.close();
             closeConnection();
-        } catch (SQLException se) { System.out.println(se); }
+        } catch (SQLException se) {
+            System.out.println(se);
+        }
         return book;
     }
 
@@ -118,7 +137,9 @@ public class BookDAO {
             rows = ps.executeUpdate();
             ps.close();
             closeConnection();
-        } catch (SQLException se) { System.out.println(se); }
+        } catch (SQLException se) {
+            System.out.println(se);
+        }
         return rows;
     }
 
@@ -139,7 +160,9 @@ public class BookDAO {
             rows = ps.executeUpdate();
             ps.close();
             closeConnection();
-        } catch (SQLException se) { System.out.println(se); }
+        } catch (SQLException se) {
+            System.out.println(se);
+        }
         return rows;
     }
 
@@ -154,7 +177,9 @@ public class BookDAO {
             rows = ps.executeUpdate();
             ps.close();
             closeConnection();
-        } catch (SQLException se) { System.out.println(se); }
+        } catch (SQLException se) {
+            System.out.println(se);
+        }
         return rows;
     }
 }
